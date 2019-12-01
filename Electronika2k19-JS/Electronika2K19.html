@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>rectExample</title>
+        <meta charset='utf-8' />
+        <script src="electroniks2k19.js"></script>     
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+    <body style="padding: 2%">
+               
+        <button onclick="BuildProgram()">Сборка кода</button>
+        <button onclick="CPU_RESET()">Reset</button>
+        <button onclick="CPU_WORK_TICK()">Выполнить команду</button>
+        <button onclick="CPU_WORK()">Пуск</button>
+
+    </br></br>
+
+    <table style="background-color:#D9CED6;border: 1rem solid #D9CED6;">
+        <tr><td>
+        <canvas id='display' style="background-color:#3F414E;border: 1rem solid #3F414E;">Обновите браузер</canvas>
+        </td>
+       <td>
+            <table style="border: 1rem solid #D9CED6 ">
+                    <tr>
+                    <td><button id = "00" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">0/I</button></td><td><button id = "10" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 1 </button></td><td><button id = "20" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 2 </button></td><td><button id = "30" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 3 </button></td><td><button id = "40" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 4 </button></td><td><button id = "50" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 5 </button></td><td><button id = "60" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> : </button></td><td><button id = "70" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> ; </button></td></tr>
+                    <tr>
+                    <td><button id = "08" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">res</button></td><td><button id = "18" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 6 </button></td><td><button id = "28" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 7 </button></td><td><button id = "38" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 8 </button></td><td><button id = "48" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 9 </button></td><td><button id = "58" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> 0 </button></td><td><button id = "68" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> / </button></td><td><button id = "78" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> - </button></td></tr>
+                    <tr>
+                    <td><button id = "016" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> A </button></td><td><button id = "116" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> B </button></td><td><button id = "216" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> W </button></td><td><button id = "316" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> G </button></td><td><button id = "416" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> D </button></td><td><button id = "516" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> E </button></td><td><button id = "616" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> V </button></td><td><button id = "716" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> Z </button></td></tr>
+                    <tr>
+                    <td><button id = "024" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> I </button></td><td><button id = "124" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> J </button></td><td><button id = "224" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> K </button></td><td><button id = "324" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> L </button></td><td><button id = "424" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> M </button></td><td><button id = "524" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> N </button></td><td><button id = "624" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> O </button></td><td><button id = "724" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> P </button></td></tr>
+                    <tr>
+                    <td><button id = "032" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> R </button></td><td><button id = "132" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> S </button></td><td><button id = "232" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> T </button></td><td><button id = "332" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> U </button></td><td><button id = "432" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> G </button></td><td><button id = "532" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> H </button></td><td><button id = "632" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> C </button></td><td><button id = "732" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">ENT</button></td></tr>
+                    <tr>
+                    <td><button id = "040" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> [ </button></td><td><button id = "140" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> ] </button></td><td><button id = "240" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> X </button></td><td><button id = "340" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> Y </button></td><td><button id = "440" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> _ </button></td><td><button id = "540" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> \ </button></td><td><button id = "640" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> | </button></td><td><button id = "740" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">|> </button></td></tr>
+                    <tr>
+                    <td><button id = "048" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "148" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">UP</button></td><td><button id = "248" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> </button></td><td><button id = "348" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "448" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "548" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> </button></td><td><button id = "648" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "748" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"></button></td></tr>
+                    <tr>
+                    <td><button id = "056" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> LEF </button></td><td><button id = "156" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> DOW </button></td><td><button id = "256" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> RHT </button></td><td><button id = "356" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "456" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "556" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> </button></td><td><button id = "656" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;">  </button></td><td><button id = "756" class="btn btn-dark" style="height:30px;width:40px;margin:0px; padding:0px;"> </button></td></tr>
+                    </table>                       
+    </td></tr>
+    </table>
+    
+    <textarea name="comment" cols="40" rows="3" id="src_textbox" class="form-control" style="margin-top: 25px;" >:START</textarea></br>
+    
+
+    <p>Флаги</p>
+
+        <input type="checkbox" id="F0"/>Флаг 0</br> 
+        <input type="checkbox" id="F1"/>флаг переполнения</br>
+        <input type="checkbox" id="F2"/>флаг чётности</br>
+        <input type="checkbox" id="F3"/>флаг ></br>
+        <input type="checkbox" id="F4"/>Флаг <</br>
+        <input type="checkbox" id="F5"/>флаг =</br>
+       
+       
+        <input type="checkbox" id="F6"/> ..</br>
+        <input type="checkbox" id="F7"/> ..</br>
+
+
+        <p>Регистры</p>   
+        <input value="0" id="LBL_SP"/> SP</br>
+        <input value="0" id="LBL_AL"/> AL</br>
+        <input value="0" id="LBL_AH"/> AH</br>
+        <input value="0" id="LBL_BL"/> BL</br>
+        <input value="0" id="LBL_BH"/> BH</br>
+        <input value="0" id="LBL_CL"/> CL</br>
+        <input value="0" id="LBL_CH"/> CH</br>
+        <input value="0" id="LBL_DL"/> DL</br>
+        <input value="0" id="LBL_DH"/> DH</br>
+        <input value="0" id="LBL_AX"/> AX</br>
+        <input value="0" id="LBL_BX"/> BX</br>
+        <input value="0" id="LBL_CX"/> CX</br>
+        <input value="0" id="LBL_DX"/> DX</br>
+
+
+        <p>Команды</p>   
+        <input value="0" id="LBL_PC"/> Команда</br>
+        <input value="0" id="LBL_SC"/> SC</br>     
+
+
+    </body>
+</html>
