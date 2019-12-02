@@ -15,6 +15,9 @@
     Команда 5 - отрисоать строку (Размер строки, [VALUE])
     Команда 6 - Reset, очистка дисплея
 */
+var DISPLAY_SIZE_X = 256;
+var DISPLAY_SIZE_Y = 128;
+var DISPLAY_SIZE_SCALE = 2;
 
 var VIDEO_COMMAND_ADR = 8192;
 var VIDEO_X = 0;
@@ -33,7 +36,7 @@ VIDEO_BUFFER = new Array();
 function VIDEO_RESET(){
     VIDEO_SimvolNow = 0;
     VIDEO_DisplayStrokeNow = 0;
-    for(i =0; i < 256*128;i++)VIDEO_BUFFER[i] = 0;
+    for(i =0; i < DISPLAY_SIZE_X*DISPLAY_SIZE_Y;i++)VIDEO_BUFFER[i] = 0;
 }
 
 function VIDEO_DOCMD(){
@@ -64,26 +67,26 @@ function VIDEO_DRAW_DIPSLAY(){
 
         display = document.getElementById("display");
         ctx  = display.getContext('2d');
-        display.width  = 500;
-        display.height = 250;
+        display.width  = DISPLAY_SIZE_X * DISPLAY_SIZE_SCALE;
+        display.height = DISPLAY_SIZE_Y * DISPLAY_SIZE_SCALE;
     
-        for(y = 0; y < 128; y++){   
-            for(x = 0;x < 256; x++){
-                if(VIDEO_BUFFER[x+(y*256)] == 1) ctx.fillStyle= VIDEO_COLOR_TURNACTIVE;
-                if(VIDEO_BUFFER[x+(y*256)] == 0) ctx.fillStyle= VIDEO_COLOR_TURNON;
-                ctx.fillRect(x*2, y*2, 2, 2);        
+        for(y = 0; y < DISPLAY_SIZE_Y; y++){   
+            for(x = 0;x < DISPLAY_SIZE_X; x++){
+                if(VIDEO_BUFFER[x+(y*DISPLAY_SIZE_X)] == 1) ctx.fillStyle= VIDEO_COLOR_TURNACTIVE;
+                if(VIDEO_BUFFER[x+(y*DISPLAY_SIZE_X)] == 0) ctx.fillStyle= VIDEO_COLOR_TURNON;
+                ctx.fillRect(x*DISPLAY_SIZE_SCALE, y*DISPLAY_SIZE_SCALE, DISPLAY_SIZE_SCALE, DISPLAY_SIZE_SCALE);        
             }
         }
 }else {
     display = document.getElementById("display");
     ctx  = display.getContext('2d');
-    display.width  = 500;
-    display.height = 250;
+        display.width  = DISPLAY_SIZE_X * DISPLAY_SIZE_SCALE;
+        display.height = DISPLAY_SIZE_Y * DISPLAY_SIZE_SCALE;
 
-    for(y = 0; y < 128; y++){   
-        for(x = 0;x < 256; x++){
+    for(y = 0; y < DISPLAY_SIZE_Y; y++){   
+        for(x = 0;x < DISPLAY_SIZE_X; x++){
             ctx.fillStyle = VIDEO_COLOR_TURNOFF;                     
-            ctx.fillRect(x*2, y*2, 2, 2);        
+            ctx.fillRect(x*DISPLAY_SIZE_SCALE, y*DISPLAY_SIZE_SCALE, DISPLAY_SIZE_SCALE, DISPLAY_SIZE_SCALE);        
         }
     }
     }
@@ -102,7 +105,7 @@ function PrintChar(Char) {
     for (X = 0; X < 6; X++) {
         buf = ByteToBool(VIDEO_FONT_ROM[char_start_byte + X]);
         for (Y = 0; Y < 8; Y++) {
-            if(X + realX>=0 & X + realX < 256 & Y + realY>=0 & Y + realY < 256) {
+            if(X + realX>=0 & X + realX < DISPLAY_SIZE_X & Y + realY>=0 & Y + realY < DISPLAY_SIZE_X) {
                 if (buf[7 - Y]==true) VIDEO_SETPIXEL(X + realX, Y + realY, 1);
             }
         }
@@ -112,7 +115,7 @@ function PrintChar(Char) {
 }
 
 function VIDEO_SETPIXEL(x,y,val){
-    VIDEO_BUFFER[x + y*256] = val;
+    VIDEO_BUFFER[x + y*DISPLAY_SIZE_X] = val;
 }
 
 function CharConverter(Char){
