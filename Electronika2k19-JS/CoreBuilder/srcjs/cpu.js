@@ -53,16 +53,18 @@ CPU_STECK_COUNT = 255;
 CPU_STECK = new Array();
 
 function CPU_STECK_PUSH(value){
+    console.log("CPU_STECK::PUSH value=" + value);
     if(CPU_STECK_COUNT>0){
         CPU_STECK.push(value);
         CPU_STECK_COUNT = CPU_STECK_COUNT - 1;
     }else{
         alert("Error переполнение стека!");
-    }
+    }     
 }
 
 function CPU_STECK_POP(){
     if(CPU_STECK_COUNT<=255){
+        CPU_STECK_COUNT = CPU_STECK_COUNT + 1;
         return CPU_STECK.pop();
     }else{
         alert("Стек пуст!");
@@ -122,13 +124,13 @@ function SET_REG_CH(value){CPU_REG_CH = value}
 function SET_REG_DL(value){CPU_REG_DL = value}
 function SET_REG_DH(value){CPU_REG_DH = value}
 
-function SET_REG_AX(value){v = ShortTo2Byte(value); CPU_REG_AH = v[0]; CPU_REG_AL[1]}
-function SET_REG_BX(value){v = ShortTo2Byte(value); CPU_REG_BH = v[0]; CPU_REG_BL[1]}
-function SET_REG_CX(value){v = ShortTo2Byte(value); CPU_REG_CH = v[0]; CPU_REG_CL[1]}
-function SET_REG_DX(value){v = ShortTo2Byte(value); CPU_REG_DH = v[0]; CPU_REG_DL[1]}
+function SET_REG_AX(value){v = ShortTo2Byte(value); CPU_REG_AH = v[0]; CPU_REG_AL = v[1]}
+function SET_REG_BX(value){v = ShortTo2Byte(value); CPU_REG_BH = v[0]; CPU_REG_BL = v[1]}
+function SET_REG_CX(value){v = ShortTo2Byte(value); CPU_REG_CH = v[0]; CPU_REG_CL = v[1]}
+function SET_REG_DX(value){v = ShortTo2Byte(value); CPU_REG_DH = v[0]; CPU_REG_DL = v[1]}
 
-function SET_REG_RL(value){CPU_REG_DL = value}
-function SET_REG_RH(value){CPU_REG_DH = value}
+function SET_REG_RL(value){CPU_REG_RL = value}
+function SET_REG_RH(value){CPU_REG_RH = value}
 
 function RESET_FLAG(){CPU_REG_F = 0b00000000;}
 function SET_FLAG0(){CPU_REG_F = CPU_REG_F | 0b00000001};
@@ -149,33 +151,23 @@ function CPU_RESET(){
 
     RESET_FLAG();
 
-    CPU_REG_PC = 0;
-    CPU_REG_SP = 0;
-    CPU_REG_AL = 0;
-    CPU_REG_AH = 0;
-    CPU_REG_BL = 0;
-    PU_REG_BH = 0;
-    CPU_REG_CL = 0;
-    CPU_REG_CH = 0;
-    CPU_REG_DL = 0;
-    CPU_REG_DH = 0;
-
-    CPU_REG_RL = 0;
-    CPU_REG_RH = 0;
-    CPU_REG_RX = 0;
+    REGS_RESET();
 
     CPU_ACTIVE=1;
 
     VIDEO_RESET();
     RAM_RESET();
+
+    BuildProgram();
+    VIDEO_DRAW_DIPSLAY();
 }
 
 function REGS_RESET(){
     RESET_FLAG();
 
-
-
     CPU_REG_PC = 0;
+    CPU_REG_SC = 0;
+
     CPU_REG_SP = 0;
     CPU_REG_AL = 0;
     CPU_REG_AH = 0;
@@ -236,6 +228,8 @@ function CPU_WORK_TICK(){
     SET_REG_RL(Math.random() * (255 - 0) + 0);
     SET_REG_RH(Math.random() * (255 - 0) + 0);
 
+    KEYBOARD_UPDATE();
+
     f = PROGRAM[CPU_REG_PC]; //Получаю текущую функцию
     command = f.src[f.SC]; //Получаю строку команды
     //Если указатель на строку функции улетает за колличество функций
@@ -249,8 +243,9 @@ function CPU_WORK_TICK(){
     }
      DoCmd(command);
      VIDEO_DOCMD();
+     //VIDEO_DRAW_DIPSLAY();
 }
 
 function CPU_WORK(){
-    setInterval(CPU_WORK_TICK, 100);
+    setInterval(CPU_WORK_TICK, 0);
 }

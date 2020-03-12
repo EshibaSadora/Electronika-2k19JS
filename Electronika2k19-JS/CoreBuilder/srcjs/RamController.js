@@ -21,9 +21,11 @@ class RamListObj{
         for(var i = 0; i<256;i++)this.RAM_BUFFER[i] = 0;
     }
     read(ADDR){
+        console.log("DEBUG::READFROM_RAM " + ADDR +","+ this.RAM_BUFFER[ADDR]);
         return this.RAM_BUFFER[ADDR];
     }
     write(ADDR,VALUE){
+        console.log("DEBUG::WRITE_TO_RAM " + ADDR + "," + VALUE);
         this.RAM_BUFFER[ADDR] = VALUE;
     }
 }

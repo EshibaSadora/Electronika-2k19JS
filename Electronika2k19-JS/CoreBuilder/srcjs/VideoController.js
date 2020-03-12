@@ -14,6 +14,7 @@
     Команда 4 - Отрисовать символ (VALUE)
     Команда 5 - отрисоать строку (Размер строки, [VALUE])
     Команда 6 - Reset, очистка дисплея
+    Команда 7 - Обновить Дисплей
 */
 var DISPLAY_SIZE_X = 256;
 var DISPLAY_SIZE_Y = 128;
@@ -56,10 +57,12 @@ function VIDEO_DOCMD(){
     };
     //Команда 6 - Reset, очистка дисплея
     if(VIDEO_COMMAND == 6)VIDEO_RESET();
+    if(VIDEO_COMMAND == 7)VIDEO_DRAW_DIPSLAY();
+  
     VIDEO_COMMAND = 0;
 }
 
-setInterval(VIDEO_DRAW_DIPSLAY, 0);
+//setInterval(VIDEO_DRAW_DIPSLAY, 100);
 
 function VIDEO_DRAW_DIPSLAY(){
 
@@ -100,13 +103,20 @@ function PrintChar(Char) {
     realY = VIDEO_DisplayStrokeNow * 8;
 
     //char_start_byte = (CharConverter(Char)+1) * 6;
-    char_start_byte = Char * 6;
+    char_start_byte = Char * 6 + 1;
 
     for (X = 0; X < 6; X++) {
         buf = ByteToBool(VIDEO_FONT_ROM[char_start_byte + X]);
         for (Y = 0; Y < 8; Y++) {
             if(X + realX>=0 & X + realX < DISPLAY_SIZE_X & Y + realY>=0 & Y + realY < DISPLAY_SIZE_X) {
-                if (buf[7 - Y]==true) VIDEO_SETPIXEL(X + realX, Y + realY, 1);
+                if (buf[7 - Y]==true)
+                { 
+                    VIDEO_SETPIXEL(X + realX, Y + realY, 1);
+                }
+                 else 
+                {
+                    VIDEO_SETPIXEL(X + realX, Y + realY, 0);
+                };
             }
         }
     }
@@ -119,6 +129,7 @@ function VIDEO_SETPIXEL(x,y,val){
 }
 
 function CharConverter(Char){
+    console.log("char_conv" + Char);
     if (Char == ' ') return -1;
     if (Char == '!') return 0;
     if (Char == '#') return 1;

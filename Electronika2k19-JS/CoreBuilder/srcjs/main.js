@@ -18,12 +18,9 @@ function UI_UPDATER(){
         F3_CH = document.getElementById("F3").checked = GET_FLAG3();
         F4_CH = document.getElementById("F4").checked = GET_FLAG4();
         F5_CH = document.getElementById("F5").checked = GET_FLAG5();
-        F6_CH = document.getElementById("F6").checked = GET_FLAG6();
-        F7_CH = document.getElementById("F7").checked = GET_FLAG7();
 
         LBL_PC = document.getElementById("LBL_PC").value = PROGRAM[CPU_REG_PC].name;
         LBL_SC = document.getElementById("LBL_SC").value = PROGRAM[CPU_REG_PC].SC;
-
 
         LBL_AL = document.getElementById("LBL_AL").value = GET_REG_AL();
         LBL_AH = document.getElementById("LBL_AH").value = GET_REG_AH();
@@ -38,12 +35,29 @@ function UI_UPDATER(){
         LBL_CX = document.getElementById("LBL_CX").value = GET_REG_CX();
         LBL_DX = document.getElementById("LBL_DX").value = GET_REG_DX();
 
-
-
-
         //LBL_RL = document.getElementById("LBL_RL").value = GET_REG_RL();
         //LBL_CX = document.getElementById("LBL_RH").value = GET_REG_RH();
        // LBL_DX = document.getElementById("LBL_RX").value = GET_REG_RX();
     
     }
+}
+
+
+function processFiles(files) {
+    
+    file = files[0];    
+    reader = new FileReader();
+    reader.readAsText(file);    
+    comment = document.getElementById("src_textbox");   
+  
+
+    reader.onload = function() {
+        comment.value = reader.result;
+      };
+        
+    
+}
+
+function debug(a){
+    return CharConverter(a);
 }

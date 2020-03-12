@@ -9,8 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import eshiba.Ini;
+
 public class js_core_builder {
 	public static void main(String [] argc) throws IOException {
+		
+		eshiba.Ini ini = new Ini("conf.ini");
+		
 		boolean ignoref = new File("ignored").createNewFile();
 		ArrayList<String> ignore = new ArrayList<String>();
 		String ignorelist = "";
@@ -23,7 +28,7 @@ public class js_core_builder {
 				str = br_ignore.readLine();
 		}	
 		
-		File jssrc = new File("srcjs/");
+		File jssrc = new File(ini.Read("main", "js_src"));
 		File[] SrcFiles = jssrc.listFiles();
 		
 		String src = "";
@@ -59,9 +64,10 @@ public class js_core_builder {
 		}
 		
 		
-		System.out.println("Загружено!");
+		System.out.println("Loaded!");
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("../electroniks2k19.js"));
+		//../electroniks2k19.js
+		BufferedWriter bw = new BufferedWriter(new FileWriter(ini.Read("main", "output_path")));
 		
 		//src = src.replace("\n", "");
 		

@@ -33,11 +33,21 @@
 
 
 function DoCmd(command){
+    console.log("CPU::COMMAND : " + command);
+
+
+    var inputcommnd  = command;
     command = command.replace(",",""); //Выкидываем ","
     opperands = command.split(" "); //Делим команду на операнды
     command_name = opperands[0];  
 
+    if(command_name=="NOP"){    
+        PROGRAM[CPU_REG_PC].SC++;
+    }
+
+    
     if(command_name=="MOV"){    
+        
         var_to_write = Number(GetRef(opperands[2]));
         SetRef(opperands[1],var_to_write);
         PROGRAM[CPU_REG_PC].SC++;
@@ -71,8 +81,8 @@ function DoCmd(command){
         PROGRAM[CPU_REG_PC].SC++;
     }
     if(command_name=="DIV"){
-        raznost = Number(GetRef(opperands[1])) / Number(GetRef(opperands[2]));
-        ostatok = Number(GetRef(opperands[1])) % Number(GetRef(opperands[2]));
+        raznost = Math.floor(Number(GetRef(opperands[1])) / Number(GetRef(opperands[2])));
+        ostatok = Math.floor(Number(GetRef(opperands[1])) % Number(GetRef(opperands[2])));
         SET_REG_DL(raznost);
         SET_REG_DH(ostatok);
         PROGRAM[CPU_REG_PC].SC++;
@@ -115,6 +125,16 @@ function DoCmd(command){
 
     } 
 
+    if(command_name=="JMP"){;
+        call_f = opperands[1];
+        for(i = 0; i < PROGRAM.length;i++){
+            if(PROGRAM[i].name == call_f){
+                CPU_REG_PC = i;
+                PROGRAM[i].SC = 0;
+            }
+        }
+    }
+
     if(command_name=="RETF"){
         flag =  Number(GetRef(opperands[1]));
         if(GET_FLAG(flag)==true){
@@ -155,12 +175,30 @@ function DoCmd(command){
             PROGRAM[CPU_REG_PC].SC++;
         }
     }
+ 
+    if(command_name=="RAM"){
+        StartAdr = opperands[1];
+        //Получаем массив
+        rambuf = inputcommnd.split("[")[1].split("]")[0].split(",");
+        savelist = MC_READ(RAM_LISTADR); //Сохраняем лист
+        for(i =0; i < rambuf.length;i++){
+            list = Math.floor((Number(i)+Number(StartAdr))/256);  
+            MC_WRITE(RAM_LISTADR,list);
+            MC_WRITE(RAM_STARTADR + ((Number(i)+Number(StartAdr))-(list*256)),rambuf[i]);     
+        }   
+        MC_WRITE(RAM_LIST,savelist);        
+        PROGRAM[CPU_REG_PC].SC++;
+    }
 }
 
 VIRTUAL_COMMANDS = new Array();
 VIRTUAL_COMMANDS = ["PRINTLN","PRINT"];
 
 function SetRef(opperand,value){
+
+    if(value >= 0){
+
+    
 
     finded =  new Boolean(false);
 
@@ -211,12 +249,12 @@ function SetRef(opperand,value){
         if(opperand == "RH" & finded!= true){finded = true; MC_WRITE(GET_REG_RH(),value)};   
 
 
-        opperand = opperand.replace("$","");
+        opperand = opperand.replace("@","");
 
-        for(i=0; i < DECLARE.length;i++){
-            if(DECLARE[i].name == opperand){
+        for(i=0; i < DATA.length;i++){
+            if(DATA[i].name == opperand){
                 finded = true;
-                opperand=DECLARE[i].value;
+                opperand=DATA[i].value;
             }
         }
 
@@ -252,53 +290,55 @@ function SetRef(opperand,value){
         }
 
 
-    if(opperand == "AL" & finded!= true){SET_REG_AL(value);finded = true;}  
-    if(opperand == "AH" & finded!= true){SET_REG_AH(value);finded = true;}
-    if(opperand == "BL" & finded!= true){SET_REG_BL(value);finded = true;}
-    if(opperand == "BH" & finded!= true){SET_REG_BH(value);finded = true;}
-    if(opperand == "CL" & finded!= true){SET_REG_CL(value);finded = true;}
-    if(opperand == "CH" & finded!= true){SET_REG_CH(value);finded = true;}
-    if(opperand == "DL" & finded!= true){SET_REG_DL(value);finded = true;}
-    if(opperand == "DH" & finded!= true){SET_REG_DH(value);finded = true;}
-    if(opperand == "AX" & finded!= true){SET_REG_AX(value);finded = true;}
-    if(opperand == "BX" & finded!= true){SET_REG_BX(value);finded = true;}
-    if(opperand == "CX" & finded!= true){SET_REG_CX(value);finded = true;}
-    if(opperand == "DX" & finded!= true){SET_REG_DX(value);finded = true;}
-    if(opperand == "RX" & finded!= true){SET_REG_RX(value);finded = true;}
-    if(opperand == "RL" & finded!= true){SET_REG_RL(value);finded = true;}
-    if(opperand == "RH" & finded!= true){SET_REG_RH(value);finded = true;}
+        if(opperand == "AL" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_AL(value);finded = true;}  
+        if(opperand == "AH" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_AH(value);finded = true;}
+        if(opperand == "BL" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_BL(value);finded = true;}
+        if(opperand == "BH" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_BH(value);finded = true;}
+        if(opperand == "CL" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_CL(value);finded = true;}
+        if(opperand == "CH" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_CH(value);finded = true;}
+        if(opperand == "DL" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_DL(value);finded = true;}
+        if(opperand == "DH" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_DH(value);finded = true;}
+        if(opperand == "AX" & finded!= true){SET_REG_AX(value);finded = true;}
+        if(opperand == "BX" & finded!= true){SET_REG_BX(value);finded = true;}
+        if(opperand == "CX" & finded!= true){SET_REG_CX(value);finded = true;}
+        if(opperand == "DX" & finded!= true){SET_REG_DX(value);finded = true;}
+        if(opperand == "RX" & finded!= true){SET_REG_RX(value);finded = true;}
+        if(opperand == "RL" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_RL(value);finded = true;}
+        if(opperand == "RH" & finded!= true){if(value>0xFF){value=value%0xFF;}SET_REG_RH(value);finded = true;}
     
     }
     
     //TODO Ошибка чтения ссылки
+
+    }
 }
 
 function GetRef(opperand){
     finded =  new Boolean(false);
 
-    //$A - Value
-    //$A.VALUE - Value
-    //$A.SIZE - Value
-    //$A.[n] - Value of array [n]
-    if(opperand.includes("$")){
-        opperand = opperand.replace("$","");
+    //@A - Value
+    //@A.VALUE - Value
+    //@A.SIZE - Value
+    //@A.[n] - Value of array [n]
+    if(opperand.includes("@")){
+        opperand = opperand.replace("@","");
         if(opperand.includes(".")){
             operands = opperand.split(".");
             if(operands.length > 1){
 
                 if(operands[1]=="value"){
-                    for(i=0; i < DECLARE.length;i++){
-                        if(DECLARE[i].name == operands[0]){
-                            if(!DECLARE[i].value.includes("\""))return DECLARE[i].value;
+                    for(i=0; i < DATA.length;i++){
+                        if(DATA[i].name == operands[0]){
+                            if(!DATA[i].value.includes("\""))return DATA[i].value;
                         }
                     }
                     finded = true;
                 }
                 
                 if(operands[1]=="SIZE"){          
-                    for(i=0; i < DECLARE.length;i++){
-                        if(DECLARE[i].name == operands[0]){
-                            word = DECLARE[i].value;
+                    for(i=0; i < DATA.length;i++){
+                        if(DATA[i].name == operands[0]){
+                            word = DATA[i].value;
                             word = word.replace("\"","").replace("\"",""); 
                             return word.length;
                         }
@@ -310,18 +350,18 @@ function GetRef(opperand){
                     operands[1] = operands[1].replace("[","");
                     operands[1] = operands[1].replace("]","");
 
-                    for(i=0; i < DECLARE.length;i++){
+                    for(i=0; i < DATA.length;i++){
 
-                        if(DECLARE[i].name == operands[0]){                 
+                        if(DATA[i].name == operands[0]){                 
 
-                            if(!DECLARE[i].value.includes("\"") ){                        
-                            return DECLARE[i].value[operands[1]];
+                            if(!DATA[i].value.includes("\"") ){                        
+                            return DATA[i].value[operands[1]];
                             }
                             else{
                                 
-                                word = DECLARE[i].value;
+                                word = DATA[i].value;
                                 word = word.replace("\"","").replace("\"","");     
-
+                                
                                 val = operands[1];
 
                                 if(val == "AL")val = GET_REG_AL();
@@ -340,6 +380,10 @@ function GetRef(opperand){
                                 if(val == "RL")val = GET_REG_RL();
                                 if(val == "RH")val = GET_REG_RH();
 
+                                console.log("CharConverter call 1 " + word[val]);
+                                
+                                CharConverter('a');
+
                                 return CharConverter(word[val])+1;
                             }
                         }
@@ -352,11 +396,11 @@ function GetRef(opperand){
             }
 
         }else{
-            opperand = opperand.replace("$","");
+            opperand = opperand.replace("@","");
             if(boolstring == false){
-            for(i=0; i < DECLARE.length;i++){
-                if(DECLARE[i].name == opperand){
-                    return DECLARE[i].value;
+            for(i=0; i < DATA.length;i++){
+                if(DATA[i].name == opperand){
+                    return DATA[i].value;
                 }
             }
             finded = true;
@@ -366,6 +410,7 @@ function GetRef(opperand){
 
     if(opperand.includes("\'")){
         opperand = opperand.replace("\'","").replace("\'","");
+        console.log("CharConverter call 2" + opperand);
         val = CharConverter(opperand)+1;
         return val;
     }
@@ -432,7 +477,7 @@ class DECL {
 PROGRAM = new Array();
 
 //Хранилище констант
-DECLARE = new Array();
+DATA = new Array();
 
 //Сборка кода
 function BuildProgram(){
@@ -440,23 +485,23 @@ function BuildProgram(){
     src = document.getElementById("src_textbox");
     fsrc = src.value.split(":");
 
-    src_declare = fsrc[0]; //DECALRE A = 50
+    src_DATA = fsrc[0]; //DECALRE A = 50
 
     
 
-    if(src_declare.length > 2){
-        declare_list = src_declare.split(";"); 
+    if(src_DATA.length > 2){
+        DATA_list = src_DATA.split(";"); 
 
-        for(i = 0; i < declare_list.length-1;i++){
+        for(i = 0; i < DATA_list.length-1;i++){
             d = new DECL();
-            d.name = declare_list[i].split("=")[0];
+            d.name = DATA_list[i].split("=")[0];
             d.name = d.name.split(" ")[1];      
-            d.value = declare_list[i].split("=")[1];
+            d.value = DATA_list[i].split("=")[1];
             
             if(!d.value.includes("\"")){
                 d.value = d.value.replace(" ","");
             }        
-           DECLARE.push(d);  
+           DATA.push(d);  
         }
     }
 
@@ -465,8 +510,6 @@ function BuildProgram(){
         f = new FUNC();
         f.name = commands[0];
         for(a = 1;a<commands.length;a++){
-            commands[a] = commands[a].replace(", "," ");
-            commands[a] = commands[a].replace(",",""); //Выкидываем ","
             commands[a] = commands[a].replace(";",""); //Выкидываем ";"
             f.src.push(commands[a]);
         }

@@ -1,0 +1,140 @@
+//F0 - Флаг 0
+//F1 - флаг переполнения
+//F2 - флаг чётности
+//F3 - флаг >
+//F4 - Флаг <
+//F5 - флаг =
+
+//Адреса
+DECLARE KEYBOARD_BUFADR = 1027;
+DECLARE KEYBOARD_SYSADR = 1028;
+DECLARE OUT_STECK_ADDR = 12300;
+DECLARE RAM_LISTADR = 4096;
+DECLARE RAM_STARTADR = 4100;
+DECLARE RAM_ENDADR = 4355;
+DECLARE VIDEO = 8192;
+
+:INIT_ELECTRONICA2K19
+Int BUF0 = 0;
+Int BUF1 = 0;
+Int BUF2 = 0;
+Int BUF3 = 0;
+Int BUF5 = 0;
+Int BUF6 = 0;
+Int BUF7 = 0;
+Int CURSORX = 0;
+Int CURSORY = 0;
+RET;
+
+//Прочитать адрес из ОЗУ
+//Передаём Адрес в BX, Число пишется в AL
+:RAM_READ
+PUSH BX;
+MOV [RAM_LISTADR], BH;
+MOV BX, BL;
+ADD BX, RAM_STARTADR;
+MOV AL, [BX];
+POP BX;
+RET;
+
+//Записать адрес в ОЗУ
+//Передаём Адрес в BX, А число в AL
+:RAM_WRITE
+PUSH BX;
+MOV [RAM_LISTADR], BH;
+MOV BX, BL;
+ADD BX, RAM_STARTADR;
+MOV [BX], AL;
+POP BX;
+RET;
+
+//Символ ожидается в CL, Координата X в DL, Координата Y в DH
+:DRAW_CHAR
+MOV [OUT_STECK_ADDR], DL;
+MOV [VIDEO], 2;
+MOV [OUT_STECK_ADDR], $CURSORY;
+MOV [VIDEO], 3;
+MOV [OUT_STECK_ADDR], CL;
+MOV [VIDEO], 4;
+MOV [VIDEO], 7;
+RET;
+
+
+:PRINTLN
+CALL PRINT_STRING;
+CALL NEXTSTROKE;
+RET;
+
+:NEXTSTROKE
+MOV AL, $CURSORY;
+INC AL;
+MOV $CURSORY, AL;
+MOV AL, 0;
+RET;
+
+//:Main
+//String str = "Hello Eshiba!";
+//MOV AX, $str.ADR;
+//CALL PRINT_STRING;
+//RES;
+
+//Передаём адрес строки в AX
+:PRINT_STRING
+PUSH AX;
+MOV CX, AX; //Сохраняем адрес строки
+MOV BX, AX;
+CALL RAM_READ;
+ADD CX, AL; //Находим крайний адрес строки 
+POP AX;
+INC CX; //Смещение вперёд, так как в первом адресе у нас размер строки
+INC AX; //Смещение вперёд, так как в первом адресе у нас размер строки
+MOV DL, 0;
+CALL PRINT_STRING_CLK;
+RET;
+:PRINT_STRING_CLK
+CP CX, AX; //Если дорисовали
+RETF 4; //возвращаемся
+MOV BX, AX; //адрес чтения
+PUSH AX; //Схраняем адрес в памяти
+PUSH CX; //Схраняем адрес в памяти
+CALL RAM_READ; //Читаем символ из памяти
+MOV CL, AL; //Символ для отрисвки
+CALL DRAW_CHAR; //рисуем
+POP CX; //возвращаем адрес
+POP AX; //возвращаем адрес
+INC AX; //движемся
+INC DL; //движемся
+JMP PRINT_STRING_CLK; //цикл
+
+
+//Передать число в CL, Пока выводим только Байт
+:PRINT_NUMBER
+CALL CONVERT_NUMBER_TO_STRING_8IT;
+MOV DL, $CURSORX;
+MOV DH, $CURSORY;
+MOV CL, [OUT_STECK_ADDR];
+CALL DRAW_CHAR;
+INC DL;
+MOV CL, [OUT_STECK_ADDR];
+CALL DRAW_CHAR;
+INC DL;
+MOV CL, [OUT_STECK_ADDR];
+CALL DRAW_CHAR;
+INC DL;
+RET;
+
+//Конвертируем число в  строку, число поместить в CL, строка отправляется в стек
+:CONVERT_NUMBER_TO_STRING_8IT
+DIV CL, 100;
+MOV CL, DH;
+ADD DL, 16;
+MOV AL, DL;
+DIV CL, 10;
+MOV CL, DH;
+ADD DL, 16;
+MOV AH, DL;
+ADD CL, 16;
+MOV [OUT_STECK_ADDR], CL;
+MOV [OUT_STECK_ADDR], AH;
+MOV [OUT_STECK_ADDR], AL;
+RET;

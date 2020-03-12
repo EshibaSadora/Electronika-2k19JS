@@ -8,8 +8,8 @@ function draw(){
     var color = false;
     var example = document.getElementById("example"),
     ctx  = example.getContext('2d');
-    example.width  = 1000;
-    example.height = 1000;
+    example.width  = 200;
+    example.height = 200;
 
     var image = document.getElementById('source');
 

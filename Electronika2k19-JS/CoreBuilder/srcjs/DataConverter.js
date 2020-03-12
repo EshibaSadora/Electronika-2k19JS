@@ -7,7 +7,7 @@ function ShortTo2Byte(short) {
     var out = new Array();
     out[0] = parseInt(short / 0xFF);
     out[1] = parseInt(short - (out[0]*0xFF));
-
+    console.log(out);
 
     return out;
 }

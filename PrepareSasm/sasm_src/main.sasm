@@ -1,0 +1,90 @@
+:data
+String str0 = "Программа сложения двух чисел";
+String str1 = "Введи первое число";
+String str2 = "Введи второе число";
+String str3 = "Сумма = ";
+RET;
+
+
+:Main
+CALL INIT_ELECTRONICA2K19;
+CALL data;
+//Начало
+//Вывожу строку 0
+MOV AX, $str0.ADR;
+CALL PRINTLN;
+//Вывожу строку 1
+MOV AX, $str1.ADR;
+CALL PRINTLN;
+//Читаю первое число
+CALL READ_NUMBER8BIT;
+MOV $BUF1, CL;
+//Перехожу на следующую строку
+CALL NEXTSTROKE;
+//Вывожу строку 2
+MOV AX, $str2.ADR;
+CALL PRINTLN;
+//Читаю Второе число
+CALL READ_NUMBER8BIT;
+ADD CL, $BUF1; //Произвожу сложение
+MOV $BUF1, CL;
+//Перехожу на следующую строку
+CALL NEXTSTROKE;
+//Вывожу строку 2
+MOV AX, $str3.ADR;
+CALL PRINT_STRING;
+//Вывожу итоговое число
+MOV CL, $BUF1;
+MOV BX, $str3.ADR;
+CALL RAM_READ;
+INC AL;
+MOV $CURSORX, AL;
+CALL PRINT_NUMBER;
+
+
+//Записывает строку с клавиатуры в буфер, завершение по кнопке ENTER
+:READLN
+
+//Читает число байт с клавиатуры в CL 
+:READ_NUMBER8BIT
+CALL READNUMBER;
+MUL CL, 100;
+MOV $BUF0, CL;
+CALL PRINT_NUMBER;
+CALL READNUMBER;
+MUL CL, 10;
+ADD CL, $BUF0
+MOV $BUF0, CL;
+CALL PRINT_NUMBER;
+CALL READNUMBER;
+ADD CL, $BUF0
+MOV $BUF0, CL;
+CALL PRINT_NUMBER;
+MOV CL, $BUF0;
+MOV $BUF0, 0;
+RET;
+
+:READKEY
+MOV CL, 0;
+CALL READKEYCLK;
+RET;
+:READKEYCLK
+CP CL, 0;
+RETF, 3;
+MOV CL, [KEYBOARD_BUFADR];
+JMP READKEYCLK;
+
+:READNUMBER
+CALL READKEY;
+ADC CL, 16;
+RET;
+
+:READSYSTEMKEY
+MOV CL, 0;
+CALL READSYSKEYCLK;
+RET;
+:READSYSKEYCLK
+CP CL, 0;
+RETF, 3;
+MOV CL, [KEYBOARD_SYSADR];
+JMP READSYSKEYCLK;

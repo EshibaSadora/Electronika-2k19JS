@@ -18,6 +18,8 @@ function MC_READ(ADDRES){
     if(ADDRES == KEYBOARD_BUFADR){return KEYBOARD_READ_CHAR();}
     //Доп клавиатура
     if(ADDRES == KEYBOARD_SYSADR){return KEYBOARD_READ_SYS();}
+
+    return 'ERR';
 }
 
 function MC_WRITE(ADDRES,VALAUE){

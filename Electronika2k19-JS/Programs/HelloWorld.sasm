@@ -1,17 +1,17 @@
-DECLARE str ="Hello Eshiba!";
-DECLARE video = 8192;
-DECLARE out_steck = 12300;
+DATA str ="Hello Eshiba!";
+DATA video = 8192;
+DATA out_steck = 12300;
 :START
-MOV AH, $str.SIZE;
+MOV AH, @str.SIZE;
 DEC AH;
 CP AL, AH;
 RESF 5;
 CALL DRAW;
 :DRAW
-MOV [$out_steck], AL;
-MOV [$video], 2;
-MOV [$out_steck], $str.[AL];
-MOV [$video], 4;
+MOV [@out_steck], AL;
+MOV [@video], 2;
+MOV [@out_steck], @str.[AL];
+MOV [@video], 4;
 CP AL, AH;
 CALLF START, 5;
 INC AL;
