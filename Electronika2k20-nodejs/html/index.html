@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <title>%PROJECTNAME%</title>
+    <script src="electroniks2k19.js"></script>
+    %HEAD%
+</head>
+<body onload="SEGIND_UPDATE();">
+
+
+%BODY%
+
+<button onclick="SEGIND_BUFF[0] = SEGIND_BUFF[0] + 1;SEGIND_UPDATE();console.log(SEGIND_BUFF[0]);">+</button>
+<button onclick="SEGIND_BUFF[0] = SEGIND_BUFF[0] - 1;SEGIND_UPDATE();console.log(SEGIND_BUFF[0]);">+</button>
+
+<table style="background-color:#D9CED6;border: 1rem solid #D9CED6;">
+    <tr><td>
+        <canvas id='display'></canvas>
+
+        <table>
+
+        </table>
+    </td></tr>
+</table>
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="bootstrap.min.js"></script>
+</body>
+</html>

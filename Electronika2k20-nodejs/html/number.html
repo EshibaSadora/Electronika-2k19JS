@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    var arr = new Array(8);
+    for(var a = 0; a < 8;a++){
+        arr[a]=0;
+    }
+
+    function invert(a) {
+        switch (a) {
+            case 0 : return 1;
+            case 1 : return 0;
+        }
+    }
+
+    function upd() {
+        var A = document.getElementById("A");
+        var B = document.getElementById("B");
+        var C = document.getElementById("C");
+        var D = document.getElementById("D");
+        var E = document.getElementById("E");
+        var F = document.getElementById("F");
+        var G = document.getElementById("G");
+
+
+        if(arr[0]==1){A.style.backgroundColor = '#FF0000';} else {A.style.background = '#000000';}
+        if(arr[1]==1){B.style.backgroundColor = '#FF0000';} else {B.style.background = '#000000';}
+        if(arr[2]==1){C.style.backgroundColor = '#FF0000';} else {C.style.background = '#000000';}
+        if(arr[3]==1){D.style.backgroundColor = '#FF0000';} else {D.style.background = '#000000';}
+        if(arr[4]==1){E.style.backgroundColor = '#FF0000';} else {E.style.background = '#000000';}
+        if(arr[5]==1){F.style.backgroundColor = '#FF0000';} else {F.style.background = '#000000';}
+        if(arr[6]==1){G.style.backgroundColor = '#FF0000';} else {G.style.background = '#000000';}
+
+        var lbl = document.getElementById("lbl");
+        lbl.innerHTML  = 'b'arr;
+
+        console.log(arr[0]);
+
+
+    }
+
+</script>
+
+<table>
+    <tr>
+        <td></td>
+        <td><button id='A' onclick="arr[0] = invert(arr[0]);upd();">A</button></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><button id="F" onclick="arr[5] = invert(arr[5]);upd();">F</button></td>
+        <td></td>
+        <td><button id="B" onclick="arr[1] = invert(arr[1]);upd();">B</button></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button id="G" onclick="arr[6] = invert(arr[6]);upd();">G</button></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><button id="E" onclick="arr[4] = invert(arr[4]);upd();">E</button></td>
+        <td></td>
+        <td><button id="C" onclick="arr[2] = invert(arr[2]);upd();">C</button></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button id="D" onclick="arr[3] = invert(arr[3]);upd();">D</button></td>
+        <td></td>
+    </tr>
+</table>
+
+<label id="lbl">b00000000</label>
+</body>
+</html>

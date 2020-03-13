@@ -1,8 +1,0 @@
-*.log
-.metadata
-
-EclipseProject/.metadata/*
-EclipseProject/.metadata/
-
-.metadata/=
-
